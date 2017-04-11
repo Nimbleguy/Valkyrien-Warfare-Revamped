@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 
-	private static final ResourceLocation RES = new ResourceLocation(ValkyrienWarfareCombatMod.MODID, "textures/items/harpoonproj.png");
+	private static final ResourceLocation RES = new ResourceLocation("minecraft", "textures/entity/projectiles/arrow.png");
 
 	protected EntityHarpoonRenderer(RenderManager renderManager) {
 		super(renderManager);
