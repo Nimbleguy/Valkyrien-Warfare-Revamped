@@ -2,6 +2,8 @@ package ValkyrienWarfareCombat;
 
 import ValkyrienWarfareCombat.Entity.EntityCannonBall;
 import ValkyrienWarfareCombat.Entity.EntityCannonBasic;
+import ValkyrienWarfareCombat.Entity.EntityHarpoon;
+import ValkyrienWarfareCombat.Entity.EntityHarpoonGun;
 import ValkyrienWarfareCombat.Item.ItemBasicCannon;
 import ValkyrienWarfareCombat.Item.ItemCannonBall;
 import ValkyrienWarfareCombat.Item.ItemHarpoonGun;
@@ -81,6 +83,8 @@ public class ValkyrienWarfareCombatMod {
 	private void registerEntities(FMLStateEvent event) {
 		EntityRegistry.registerModEntity(EntityCannonBasic.class, "EntityCannonBasic", 71, this, 120, 1, false);
 		EntityRegistry.registerModEntity(EntityCannonBall.class, "EntityCannonBall", 72, this, 120, 5, true);
+		EntityRegistry.registerModEntity(EntityHarpoonGun.class, "EntityHarpoonGun", 73, this, 120, 1, false);
+		EntityRegistry.registerModEntity(EntityHarpoon.class, "EntityHarpoon", 74, this, 120, 5, true);
 	}
 
 	private void registerBlocks(FMLStateEvent event) {

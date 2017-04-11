@@ -1,7 +1,7 @@
 package ValkyrienWarfareCombat.Render;
 
-import ValkyrienWarfareCombat.Entity.EntityCannonBall;
-import ValkyrienWarfareCombat.Entity.EntityCannonBasic;
+import ValkyrienWarfareCombat.Entity.EntityHarpoon;
+import ValkyrienWarfareCombat.Entity.EntityHarpoonGun;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
