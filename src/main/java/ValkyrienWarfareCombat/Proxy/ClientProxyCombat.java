@@ -2,8 +2,11 @@ package ValkyrienWarfareCombat.Proxy;
 
 import ValkyrienWarfareCombat.ValkyrienWarfareCombatMod;
 import ValkyrienWarfareCombat.Entity.EntityCannonBall;
+import ValkyrienWarfareCombat.Entity.EntityHarpoon;
 import ValkyrienWarfareCombat.Entity.EntityCannonBasic;
+import ValkyrienWarfareCombat.Entity.EntityHarpoonGun;
 import ValkyrienWarfareCombat.Render.EntityCannonBasicRenderFactory;
+import ValkyrienWarfareCombat.Render.EntityHarpoonGunRenderFactory;
 import ValkyrienWarfareControl.ValkyrienWarfareControlMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;
@@ -22,7 +25,9 @@ public class ClientProxyCombat extends CommonProxyCombat {
 		super.preInit(e);
 		OBJLoader.INSTANCE.addDomain(ValkyrienWarfareCombatMod.MODID.toLowerCase());
 		RenderingRegistry.registerEntityRenderingHandler(EntityCannonBasic.class, new EntityCannonBasicRenderFactory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityHarpoonGun.class, new EntityHarpoonGunRenderFactory());
 		RenderingRegistry.registerEntityRenderingHandler(EntityCannonBall.class, new EntityCannonBasicRenderFactory.EntityCannonBallRenderFactory());
+		RenderingRegistry.registerEntityRenderingHandler(EntityHarpoon.class, new EntityHarpoonGunRenderFactory.EntityHarpoonRenderFactory());
 	}
 
 	@Override
