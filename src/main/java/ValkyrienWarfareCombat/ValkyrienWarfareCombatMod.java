@@ -4,7 +4,9 @@ import ValkyrienWarfareCombat.Entity.EntityCannonBall;
 import ValkyrienWarfareCombat.Entity.EntityCannonBasic;
 import ValkyrienWarfareCombat.Item.ItemBasicCannon;
 import ValkyrienWarfareCombat.Item.ItemCannonBall;
+import ValkyrienWarfareCombat.Item.ItemHarpoonGun;
 import ValkyrienWarfareCombat.Item.ItemPowderPouch;
+import ValkyrienWarfareCombat.Item.ItemHarpoon;
 import ValkyrienWarfareCombat.Proxy.CommonProxyCombat;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -37,6 +39,8 @@ public class ValkyrienWarfareCombatMod {
 	public Item basicCannonSpawner;
 	public Item cannonBall;
 	public Item powderPouch;
+	public Item harpoon;
+	public Item harpoonGunSpawner;
 
 	public Block fakeCannonBlock;
 
@@ -64,10 +68,14 @@ public class ValkyrienWarfareCombatMod {
 		basicCannonSpawner = new ItemBasicCannon().setUnlocalizedName("basiccannonspawner").setRegistryName(MODID, "basiccannonspawner").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(4);
 		cannonBall = new ItemCannonBall().setUnlocalizedName("cannonball").setRegistryName(MODID, "cannonball").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
 		powderPouch = new ItemPowderPouch().setUnlocalizedName("powderpouch").setRegistryName(MODID, "powderpouch").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
+		harpoon = new ItemHarpoon().setUnlocalizedName("harpoon").setRegistryName(MODID, "harpoon").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
+		harpoonGunSpawner = new ItemHarpoonGun().setUnlocalizedName("harpoongunspawner").setRegistryName(MODID, "harpoongunspawner").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(1);
 
-		GameRegistry.registerItem(basicCannonSpawner);
-		GameRegistry.registerItem(cannonBall);
-		GameRegistry.registerItem(powderPouch);
+		GameRegistry.register(basicCannonSpawner);
+		GameRegistry.register(cannonBall);
+		GameRegistry.register(powderPouch);
+		GameRegistry.register(harpoon);
+		GameRegistry.register(harpoonGunSpawner);
 	}
 
 	private void registerEntities(FMLStateEvent event) {
@@ -84,6 +92,7 @@ public class ValkyrienWarfareCombatMod {
 	private void registerRecipies(FMLStateEvent event) {
 		GameRegistry.addRecipe(new ItemStack(cannonBall, 4), new Object[] { "II ", "II ", "   ", 'I', Items.IRON_INGOT });
 		GameRegistry.addRecipe(new ItemStack(powderPouch, 4), new Object[] { " S ", "SGS", " S ", 'S', Items.STRING, 'G', Items.GUNPOWDER });
+		GameRegistry.addRecipe(new ItemStack(harpoon, 1), new Object[] {" II", "SWI", "WS ", 'I', Items.IRON_INGOT, 'S', Items.STRING, 'W', Items.STICK});
 	}
 
 }

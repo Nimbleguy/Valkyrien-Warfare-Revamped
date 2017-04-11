@@ -36,6 +36,8 @@ public class ClientProxyCombat extends CommonProxyCombat {
 		registerItemModel(ValkyrienWarfareCombatMod.instance.basicCannonSpawner);
 		registerItemModel(ValkyrienWarfareCombatMod.instance.cannonBall);
 		registerItemModel(ValkyrienWarfareCombatMod.instance.powderPouch);
+		registerItemModel(ValkyrienWarfareCombatMod.instance.harpoon);
+		registerItemModel(ValkyrienWarfareCombatMod.instance.harpoonGunSpawner);
 	}
 
 	private void registerItemModel(Item toRegister) {
