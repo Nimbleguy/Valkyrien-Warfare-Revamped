@@ -3,8 +3,6 @@ package ValkyrienWarfareCombat.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import ValkyrienWarfareBase.API.RotationMatrices;
 import ValkyrienWarfareBase.API.Vector;
 import ValkyrienWarfareBase.PhysicsManagement.PhysicsWrapperEntity;
@@ -22,7 +20,6 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 	private final static int POWDER_NEEDED = 4;//amount of powder pouches needed per shot
 	private final static int TIME_COOLDOWN_TICKS = 60;//3 sec
 
-	private boolean newRider = false;
 	private long lastFireTick = -TIME_COOLDOWN_TICKS;
 
 	public EntityHarpoonGun(World worldIn){
@@ -61,91 +58,63 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 	}
 
 	@Override
-	public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand){
-
-		boolean notRiding = false;
-
-		if (player.getRidingEntity() != null){
-			if (player.getRidingEntity().equals(this)){
-				notRiding = true;
-			}
-		}
-
-		boolean ret = super.processInitialInteract(player, stack, hand);
-
-		if (player.getRidingEntity() != null){
-			if (player.getRidingEntity().equals(this)){
-				if (notRiding){
-					newRider = true;
-				}
-			}
-		}
-
-		return ret;
-	}
-
-	@Override
 	public void onRiderInteract(EntityPlayer player, ItemStack stack, EnumHand hand){
-		if (!newRider){//no instant shooting
-			if (!player.worldObj.isRemote){
-				if (worldObj.getMinecraftServer().getTickCounter()-lastFireTick >= TIME_COOLDOWN_TICKS){
+		if (!player.worldObj.isRemote){
+			if (worldObj.getMinecraftServer().getTickCounter()-lastFireTick >= TIME_COOLDOWN_TICKS){
 
-					ItemStack harpoon = null;
-					List<ItemStack> gunpowders = new ArrayList<ItemStack>();
-					int gunpowderSum = 0;
+				ItemStack harpoon = null;
+				List<ItemStack> gunpowders = new ArrayList<ItemStack>();
+				int gunpowderSum = 0;
 
-					for (ItemStack[] inv : player.inventory.allInventories){
-						for (ItemStack is : inv){
+				for (ItemStack[] inv : player.inventory.allInventories){
+					for (ItemStack is : inv){
 
-							if (is == null)
-								continue;
+						if (is == null)
+							continue;
 
-							if (is.getItem().equals(ValkyrienWarfareCombatMod.instance.harpoon)){
-								if (harpoon == null)
-									harpoon = is;
-							}
+						if (is.getItem().equals(ValkyrienWarfareCombatMod.instance.harpoon)){
+							if (harpoon == null)
+								harpoon = is;
+						}
 
-							else if (is.getItem().equals(ValkyrienWarfareCombatMod.instance.powderPouch)){
-								gunpowderSum+=is.stackSize;
-								gunpowders.add(is);
-							}
+						else if (is.getItem().equals(ValkyrienWarfareCombatMod.instance.powderPouch)){
+							gunpowderSum+=is.stackSize;
+							gunpowders.add(is);
+						}
 
-							int prevSize;
+						int prevSize;
 
-							if (harpoon != null){
-								if (gunpowderSum >= POWDER_NEEDED){
+						if (harpoon != null){
+							if (gunpowderSum >= POWDER_NEEDED){
 
-									gunpowderSum=POWDER_NEEDED;//this and the for loop for removing necessary amount of gunpowder
-									for (ItemStack s : gunpowders){
-										prevSize = s.stackSize;
-										s.stackSize=Math.max(s.stackSize-gunpowderSum,0);
-										gunpowderSum-=Math.min(Math.max(prevSize,0),gunpowderSum);
-										if (s.stackSize<=0){
-											int index = player.inventory.getSlotFor(s);
-											player.inventory.setInventorySlotContents(index, null);
-										}
-									}
-									gunpowders = null;
-
-									harpoon.stackSize--;
-									if (harpoon.stackSize<=0){
-										int index = player.inventory.getSlotFor(harpoon);
+								gunpowderSum=POWDER_NEEDED;//this and the for loop for removing necessary amount of gunpowder
+								for (ItemStack s : gunpowders){
+									prevSize = s.stackSize;
+									s.stackSize=Math.max(s.stackSize-gunpowderSum,0);
+									gunpowderSum-=Math.min(Math.max(prevSize,0),gunpowderSum);
+									if (s.stackSize<=0){
+										int index = player.inventory.getSlotFor(s);
 										player.inventory.setInventorySlotContents(index, null);
 									}
-
-									harpoon = null;
-
-									fire(player,stack,hand);
-									return;//cancel the loop
 								}
-							}
+								gunpowders = null;
 
+								harpoon.stackSize--;
+								if (harpoon.stackSize<=0){
+									int index = player.inventory.getSlotFor(harpoon);
+									player.inventory.setInventorySlotContents(index, null);
+								}
+
+								harpoon = null;
+
+								fire(player,stack,hand);
+								return;//cancel the loop
+							}
 						}
+
 					}
 				}
 			}
-		}else{
-			newRider=false;
 		}
 	}
 
