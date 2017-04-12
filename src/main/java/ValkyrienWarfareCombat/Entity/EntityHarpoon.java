@@ -73,6 +73,16 @@ public class EntityHarpoon extends EntityArrow{
 		}
 
 	}
+	
+	@Override
+	public void onUpdate(){
+		super.onUpdate();
+		//if (!this.isEntityAlive()){
+			System.out.print(this.posX + ",");
+			System.out.print(this.posY + ",");
+			System.out.println(this.posZ);
+		//}
+	}
 
 	@Override
 	protected ItemStack getArrowStack(){
