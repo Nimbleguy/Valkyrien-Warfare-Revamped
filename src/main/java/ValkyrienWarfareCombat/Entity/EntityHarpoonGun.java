@@ -10,6 +10,8 @@ import ValkyrienWarfareCombat.ValkyrienWarfareCombatMod;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -51,7 +53,6 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 		projectile.posY += projectileSpawnPos.Y;
 		projectile.posZ += projectileSpawnPos.Z;
 
-		worldObj.playBroadcastSound(155, new BlockPos(posX,posY,posZ), 1);
 		worldObj.spawnEntityInWorld(projectile);
 
 		lastFireTick = worldObj.getMinecraftServer().getTickCounter();
