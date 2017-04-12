@@ -1,0 +1,8 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "modelid=0": { "model": "valkyrienwarfarecombat:harpoonbase.obj" },
+        "modelid=1": { "model": "valkyrienwarfarecombat:harpoonbarrel.obj" },
+        "modelid=2": { "model": "valkyrienwarfarecombat:harpoon.obj" },
+    }
+}

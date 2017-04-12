@@ -45,6 +45,7 @@ public class ValkyrienWarfareCombatMod {
 	public Item harpoonGunSpawner;
 
 	public Block fakeCannonBlock;
+	public Block fakeHarpoonGunBlock;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -89,8 +90,10 @@ public class ValkyrienWarfareCombatMod {
 
 	private void registerBlocks(FMLStateEvent event) {
 		fakeCannonBlock = new FakeCannonBlock(Material.IRON).setHardness(5f).setUnlocalizedName("fakeCannonBlock").setRegistryName(MODID, "fakeCannonBlock").setCreativeTab(CreativeTabs.REDSTONE);
+		fakeHarpoonGunBlock = new FakeHarpoonGunBlock(Material.IRON).setHardness(5f).setUnlocalizedName("fakeHarpoonGunBlock").setRegistryName(MODID, "fakeHarpoonGunBlock").setCreativeTab(CreativeTabs.REDSTONE);
 
 		GameRegistry.registerBlock(fakeCannonBlock);
+		GameRegistry.registerBlock(fakeHarpoonGunBlock);
 	}
 
 	private void registerRecipies(FMLStateEvent event) {

@@ -9,7 +9,7 @@ import net.minecraft.block.state.IBlockState;
 
 public class FakeHarpoonGunBlock extends Block{
 
-	public static final PropertyInteger modelId = PropertyInteger.create("modelid", 0, 15);
+	public static final PropertyInteger modelId = PropertyInteger.create("modelid", 0, 2);
 
 	public FakeHarpoonGunBlock(Material materialIn) {
 		super(materialIn);

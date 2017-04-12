@@ -24,8 +24,8 @@ public class EntityHarpoonGunRender extends Render<EntityHarpoonGun> {
 
 	protected EntityHarpoonGunRender(RenderManager renderManager) {
 		super(renderManager);
-		baseState = ValkyrienWarfareCombatMod.instance.fakeCannonBlock.getStateFromMeta(0);
-		headState = ValkyrienWarfareCombatMod.instance.fakeCannonBlock.getStateFromMeta(1);
+		baseState = ValkyrienWarfareCombatMod.instance.fakeHarpoonGunBlock.getStateFromMeta(0);
+		headState = ValkyrienWarfareCombatMod.instance.fakeHarpoonGunBlock.getStateFromMeta(1);
 	}
 
 	@Override
