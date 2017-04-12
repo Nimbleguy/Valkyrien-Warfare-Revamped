@@ -3,6 +3,8 @@ package ValkyrienWarfareCombat.Entity;
 import java.util.Random;
 
 import ValkyrienWarfareBase.API.Vector;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,9 +38,9 @@ public class EntityHarpoon extends EntityArrow{
 		Entity entity = raytrace.entityHit;
 
 		if (entity == null){
+
 			
-			raytrace.getBlockPos();
-			
+
 		}else{//it hit an entity
 
 			DamageSource damagesource;
@@ -61,7 +63,6 @@ public class EntityHarpoon extends EntityArrow{
 					}
 
 					arrowHit(liveEnt);
-
 
 					this.setDead();
 				}
