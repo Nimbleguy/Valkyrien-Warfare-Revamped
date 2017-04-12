@@ -22,7 +22,7 @@ public class EntityHarpoon extends EntityArrow{
 
 	private EntityHarpoonGun origin;
 
-	private EntityHarpoon(World worldIn) {
+	public EntityHarpoon(World worldIn) {
 		super(worldIn);
 	}
 
