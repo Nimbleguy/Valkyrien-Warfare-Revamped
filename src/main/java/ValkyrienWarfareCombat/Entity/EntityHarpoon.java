@@ -37,12 +37,10 @@ public class EntityHarpoon extends EntityArrow{
 
 		Entity entity = raytrace.entityHit;
 
-		if (entity == null){
-
-			
-
-		}else{//it hit an entity
-
+		if(entity == null){
+			this.setVelocity(0, 0, 0);
+		}
+		else{//it hit an entity
 			DamageSource damagesource;
 
 			if (shootingEntity == null){
