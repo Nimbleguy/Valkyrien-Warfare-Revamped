@@ -7,6 +7,7 @@ import ValkyrienWarfareBase.API.RotationMatrices;
 import ValkyrienWarfareBase.API.Vector;
 import ValkyrienWarfareBase.PhysicsManagement.PhysicsWrapperEntity;
 import ValkyrienWarfareCombat.ValkyrienWarfareCombatMod;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -56,6 +57,17 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 		worldObj.spawnEntityInWorld(projectile);
 
 		lastFireTick = worldObj.getMinecraftServer().getTickCounter();
+	}
+
+	@Override
+	public void onUpdate(){
+		super.onUpdate();
+		if (!worldObj.isRemote){
+			if (worldObj.getBlockState(new BlockPos(posX,((int)posY)-1,posZ)).getMaterial().equals(Material.AIR)){
+				this.kill();
+				this.doItemDrops();
+			}
+		}
 	}
 
 	@Override
@@ -112,7 +124,6 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 								return;//cancel the loop
 							}
 						}
-
 					}
 				}
 			}
@@ -122,7 +133,7 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 	@Override
 	public void doItemDrops(){
 		ItemStack i = new ItemStack(ValkyrienWarfareCombatMod.instance.harpoonGunSpawner);
-		i.setStackDisplayName(getName() == null? "HARPOON_GUN" : getName());//if getName() is null, set name to HARPOON_GUN. else set it to getName()
+		i.setStackDisplayName(getDisplayName() == null? "HARPOON_GUN" : getDisplayName().getFormattedText());//if getName() is null, set name to HARPOON_GUN. else set it to getName()
 		entityDropItem(i,0F);
 	}
 
