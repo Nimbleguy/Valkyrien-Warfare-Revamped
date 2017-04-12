@@ -20,7 +20,7 @@ public class EntityHarpoon extends EntityArrow{
 	public static final int MAX_DMG = 20;//10 hearts
 	public static final int MIN_DMG = 5;//2.5 hearts
 
-	private EntityHarpoonGun origin;
+	public EntityHarpoonGun origin;
 
 	public EntityHarpoon(World worldIn) {
 		super(worldIn);
