@@ -29,7 +29,14 @@ public class EntityHarpoon extends EntityArrow{
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
 		this.origin=origin;
-		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
+		motionX = velocityVector.X;
+		motionY = velocityVector.Y;
+		motionZ = velocityVector.Z;
+		prevRotationYaw = rotationYaw = origin.rotationYaw;
+		prevRotationPitch = rotationPitch = origin.rotationPitch;
+		prevPosX = lastTickPosX = posX = origin.posX;
+		prevPosY = lastTickPosY = posY = origin.posY;
+		prevPosZ = lastTickPosZ = posZ = origin.posZ;
 	}
 
 	@Override
@@ -40,7 +47,7 @@ public class EntityHarpoon extends EntityArrow{
 		if(entity == null){
 			this.setVelocity(0, 0, 0);
 		}
-		else{//it hit an entity
+		else if(!(entity instanceof EntityHarpoonGun)){//it hit an entity that isn't a harpoon gun
 			DamageSource damagesource;
 
 			if (shootingEntity == null){
@@ -61,8 +68,6 @@ public class EntityHarpoon extends EntityArrow{
 					}
 
 					arrowHit(liveEnt);
-
-					this.setDead();
 				}
 			}
 		}
