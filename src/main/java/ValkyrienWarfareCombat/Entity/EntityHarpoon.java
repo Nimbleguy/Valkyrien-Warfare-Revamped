@@ -29,14 +29,11 @@ public class EntityHarpoon extends EntityArrow{
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
 		this.origin=origin;
-		motionX = velocityVector.X;
-		motionY = velocityVector.Y;
-		motionZ = velocityVector.Z;
+		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		prevRotationYaw = rotationYaw = origin.rotationYaw;
 		prevRotationPitch = rotationPitch = origin.rotationPitch;
-		prevPosX = lastTickPosX = posX = origin.posX;
-		prevPosY = lastTickPosY = posY = origin.posY;
-		prevPosZ = lastTickPosZ = posZ = origin.posZ;
+		this.setPosition(origin.posX, origin.posY, origin.posZ);
+		System.out.println(posX + " " + posY + " " + posZ + "kek");
 	}
 
 	@Override
