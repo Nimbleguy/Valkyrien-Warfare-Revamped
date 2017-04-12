@@ -60,26 +60,25 @@ public class EntityHarpoonGunRender extends Render<EntityHarpoonGun> {
 
 		GL11.glTranslated(x, y, z);
 
-		double offsetAngle = entity.getBaseAngleOffset();
-		GL11.glRotated(offsetAngle, 0, 1D, 0);
+		GL11.glPushMatrix(); // gl instructions are done backwards for some reason
 
-		GL11.glPushMatrix();
+		GL11.glRotated(renderYaw, 0, 1d, 0);
+		GL11.glTranslated(0.5d, 0, 0.5d);
 
-		GL11.glTranslated(-.1D, 0, 0);
 		renderBase(entity, x, y, z, entityYaw, partialTicks);
 
 		GL11.glPopMatrix();
 
-		GL11.glTranslated(.15D, .5D, 0);
-		// GL11.glTranslated(.1D,0,0);
-
-		GL11.glRotated(renderYaw - offsetAngle, 0, 1D, 0);
-		GL11.glRotated(renderPitch, 0, 0, 1D);
-
-		GL11.glTranslated(-.8D, 0, -0.25);
-
 		GL11.glPushMatrix();
+
+		GL11.glTranslated(0, 1.25d, 0);
+		GL11.glRotated(renderYaw, 0, 1d, 0);
+		GL11.glRotated(renderPitch + 180d, 0d, 0d, 1d);
+		//GL11.glTranslated(-0.25d, -0.25d, -0.25d);
+		GL11.glTranslated(0.25d, 0, 0.5d);
+
 		renderHead(entity, x, y, z, entityYaw, partialTicks);
+
 		GL11.glPopMatrix();
 
 		if (this.renderOutlines) {
