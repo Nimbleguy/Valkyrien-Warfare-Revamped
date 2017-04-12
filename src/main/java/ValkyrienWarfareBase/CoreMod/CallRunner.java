@@ -1,10 +1,12 @@
 package ValkyrienWarfareBase.CoreMod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSetMultimap;
 
 import ValkyrienWarfareBase.ValkyrienWarfareMod;
 import ValkyrienWarfareBase.API.RotationMatrices;
@@ -34,6 +36,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -43,8 +46,33 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public class CallRunner {
+
+	/**
+	 * I've got 30 different reasons to hate ChickenChunks; but fuck him this is #1
+	 * @param world
+	 * @return
+	 */
+	public static ImmutableSetMultimap<ChunkPos, Ticket> fuckChickenChunks(World world){
+		ImmutableSetMultimap original = world.getPersistentChunks();
+
+		ImmutableSetMultimap.Builder builder = ImmutableSetMultimap.builder();
+		builder.putAll(original);
+
+		ArrayList<PhysicsWrapperEntity> wrapperEntities = ValkyrienWarfareMod.physicsManager.getManagerForWorld(world).getTickablePhysicsEntities();
+		for(PhysicsWrapperEntity wrapper:wrapperEntities){
+			for(Chunk[] chunks:wrapper.wrapping.claimedChunks){
+				for(Chunk chunk:chunks){
+					//Don't bother generating a new ticket, this specific use case works with it
+					builder.put(new ChunkPos(chunk.xPosition, chunk.zPosition), chunk);
+				}
+			}
+		}
+
+		return builder.build();
+    }
 
 	public static double getDistanceSq(TileEntity tile, double x, double y, double z){
 		World tileWorld = tile.getWorld();
@@ -278,23 +306,29 @@ public class CallRunner {
 	}
 
 	public static <T extends Entity> List<T> onGetEntitiesWithinAABB(World world, Class<? extends T> clazz, AxisAlignedBB aabb, @Nullable Predicate<? super T> filter) {
+		List toReturn = world.getEntitiesWithinAABB(clazz, aabb, filter);
+
 		BlockPos pos = new BlockPos((aabb.minX + aabb.maxX) / 2D, (aabb.minY + aabb.maxY) / 2D, (aabb.minZ + aabb.maxZ) / 2D);
 		PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getObjectManagingPos(world, pos);
 		if (wrapper != null) {
 			Polygon poly = new Polygon(aabb, wrapper.wrapping.coordTransform.lToWTransform);
 			aabb = poly.getEnclosedAABB();//.contract(.3D);
+			toReturn.addAll(world.getEntitiesWithinAABB(clazz, aabb, filter));
 		}
-		return world.getEntitiesWithinAABB(clazz, aabb, filter);
+		return toReturn;
 	}
 
 	public static List<Entity> onGetEntitiesInAABBexcluding(World world, @Nullable Entity entityIn, AxisAlignedBB boundingBox, @Nullable Predicate<? super Entity> predicate) {
+		List toReturn = world.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
+
 		BlockPos pos = new BlockPos((boundingBox.minX + boundingBox.maxX) / 2D, (boundingBox.minY + boundingBox.maxY) / 2D, (boundingBox.minZ + boundingBox.maxZ) / 2D);
 		PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getObjectManagingPos(world, pos);
 		if (wrapper != null) {
 			Polygon poly = new Polygon(boundingBox, wrapper.wrapping.coordTransform.lToWTransform);
 			boundingBox = poly.getEnclosedAABB().contract(.3D);
+			toReturn.addAll(world.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate));
 		}
-		return world.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
+		return toReturn;
 	}
 
 //	public static Iterator<Chunk> onGetPersistentChunkIterable(World world, Iterator<Chunk> chunkIterator) {
