@@ -33,7 +33,6 @@ public class EntityHarpoon extends EntityArrow{
 		prevRotationYaw = rotationYaw = origin.rotationYaw;
 		prevRotationPitch = rotationPitch = origin.rotationPitch;
 		this.setPosition(origin.posX, origin.posY, origin.posZ);
-		System.out.println(posX + " " + posY + " " + posZ + "kek");
 	}
 
 	@Override
@@ -71,16 +70,6 @@ public class EntityHarpoon extends EntityArrow{
 
 	}
 	
-	@Override
-	public void onUpdate(){
-		super.onUpdate();
-		//if (!this.isEntityAlive()){
-			System.out.print(this.posX + ",");
-			System.out.print(this.posY + ",");
-			System.out.println(this.posZ);
-		//}
-	}
-
 	@Override
 	protected ItemStack getArrowStack(){
 		return null;
