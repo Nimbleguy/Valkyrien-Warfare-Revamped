@@ -27,23 +27,27 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 		if(entity.shootingEntity != null){
 			GL11.glPushMatrix();
 
+			GlStateManager.translate(x, y, z);
+
 			GlStateManager.disableTexture2D();
-			GlStateManager.disableDepth();
+			//GlStateManager.disableDepth();
 			GlStateManager.disableLighting();
+
+			GlStateManager.glLineWidth(5f);
 
 			Tessellator t = Tessellator.getInstance();
 			VertexBuffer v = t.getBuffer();
-			v.begin(GL11.GL_LINE, DefaultVertexFormats.POSITION_COLOR);
-			v.pos(x, y, z);
+			v.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+			v.pos(0, 0, 0);
 			v.color(141, 81, 24, 255);
 			v.endVertex();
-			v.pos(entity.shootingEntity.posX, entity.shootingEntity.posY, entity.shootingEntity.posZ);
+			v.pos(entity.shootingEntity.posX - entity.posX, entity.shootingEntity.posY - entity.posY, entity.shootingEntity.posZ - entity.posZ);
 			v.color(141, 81, 24, 255);
 			v.endVertex();
 			t.draw();
 
 			GlStateManager.enableLighting();
-			GlStateManager.enableDepth();
+			//GlStateManager.enableDepth();
 			GlStateManager.enableTexture2D();
 
 			GL11.glPopMatrix();
