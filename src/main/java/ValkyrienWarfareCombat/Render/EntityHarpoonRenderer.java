@@ -33,7 +33,7 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 
 			Tessellator t = Tessellator.getInstance();
 			VertexBuffer v = t.getBuffer();
-			v.begin(GL11.GL_LINE, DefaultVertexFormats.POSITION_COLOR);
+			v.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 			v.pos(x, y, z);
 			v.color(141, 81, 24, 255);
 			v.endVertex();
