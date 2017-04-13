@@ -111,6 +111,6 @@ public class ValkyrienWarfareCombatMod {
 
 	private void registerPackets(FMLStateEvent event){
 		int id = 0;
-		network..registerMessage(PacketHarpoon.class, PacketHarpoon.class, id++, Side.CLIENT);
+		network.registerMessage(PacketHarpoon.class, PacketHarpoon.class, id++, Side.CLIENT);
 	}
 }

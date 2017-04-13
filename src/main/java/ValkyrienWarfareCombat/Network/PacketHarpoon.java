@@ -1,10 +1,14 @@
 package ValkyrienWarfareCombat.Network;
 
+import net.minecraft.client.Minecraft;
+
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import io.netty.buffer.ByteBuf;
+
+import ValkyrienWarfareCombat.Entity.EntityHarpoon;
 
 public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, IMessage>{
 	private int gid;
@@ -33,5 +37,6 @@ public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, I
 	public IMessage onMessage(PacketHarpoon p, MessageContext c){
 		EntityHarpoon h = (EntityHarpoon)Minecraft.getMinecraft().theWorld.getEntityByID(hid);
 		h.shootingEntity = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+		return null;
 	}
 }

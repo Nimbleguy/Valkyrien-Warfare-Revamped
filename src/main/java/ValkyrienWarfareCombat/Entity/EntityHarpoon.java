@@ -3,6 +3,8 @@ package ValkyrienWarfareCombat.Entity;
 import java.util.Random;
 
 import ValkyrienWarfareBase.API.Vector;
+import ValkyrienWarfareCombat.ValkyrienWarfareCombatMod;
+import ValkyrienWarfareCombat.Network.PacketHarpoon;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,8 +28,8 @@ public class EntityHarpoon extends EntityArrow{
 
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
-		System.out.println(worldObj.isRemote);
 		this.shootingEntity = origin;
+		ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(origin.getEntityId(), this.getEntityId()));
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		this.setRotation(origin.rotationYaw, origin.rotationPitch);
 		prevRotationYaw = origin.rotationYaw;
