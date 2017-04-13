@@ -30,8 +30,9 @@ public class EntityHarpoon extends EntityArrow{
 		super(worldObj);
 		this.origin=origin;
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
-		prevRotationYaw = rotationYaw = origin.rotationYaw;
-		prevRotationPitch = rotationPitch = origin.rotationPitch;
+		this.setRotation(origin.rotationYaw, origin.rotationPitch);
+		prevRotationYaw = origin.rotationYaw;
+		prevRotationPitch = origin.rotationPitch;
 		this.setPosition(origin.posX, origin.posY, origin.posZ);
 	}
 
@@ -39,11 +40,10 @@ public class EntityHarpoon extends EntityArrow{
 	public void onHit(RayTraceResult raytrace){
 
 		Entity entity = raytrace.entityHit;
-
+		
 		if(entity == null){
 			this.setVelocity(0, 0, 0);
-		}
-		else if(!(entity instanceof EntityHarpoonGun)){//it hit an entity that isn't a harpoon gun
+		}else if(!(entity instanceof EntityHarpoonGun || entity.equals(this))){//it hit an entity that isn't a harpoon gun
 			DamageSource damagesource;
 
 			if (shootingEntity == null){
@@ -67,9 +67,8 @@ public class EntityHarpoon extends EntityArrow{
 				}
 			}
 		}
-
 	}
-	
+
 	@Override
 	protected ItemStack getArrowStack(){
 		return null;
