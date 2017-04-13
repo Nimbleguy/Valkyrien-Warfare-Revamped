@@ -35,7 +35,7 @@ public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, I
 
 	@Override
 	public IMessage onMessage(PacketHarpoon p, MessageContext c){
-		Minecraft.getMinecraft().addScheduledTask(new Execute(gid, hid));
+		Minecraft.getMinecraft().addScheduledTask(new Execute(p.gid, p.hid));
 		return null;
 	}
 

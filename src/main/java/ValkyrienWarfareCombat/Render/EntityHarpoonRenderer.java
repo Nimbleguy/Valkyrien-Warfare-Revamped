@@ -25,11 +25,11 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
 		if(entity.shootingEntity != null){
-			System.out.println("kek");
-			GlStateManager.pushMatrix();
+			GL11.glPushMatrix();
 
 			GlStateManager.disableTexture2D();
 			GlStateManager.disableDepth();
+			GlStateManager.disableLighting();
 
 			Tessellator t = Tessellator.getInstance();
 			VertexBuffer v = t.getBuffer();
@@ -42,7 +42,11 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 			v.endVertex();
 			t.draw();
 
-			GlStateManager.popMatrix();
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
+			GlStateManager.enableTexture2D();
+
+			GL11.glPopMatrix();
 		}
 	}
 
