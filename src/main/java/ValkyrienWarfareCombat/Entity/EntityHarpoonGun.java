@@ -50,9 +50,9 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 			RotationMatrices.applyTransform(wrapper.wrapping.coordTransform.lToWRotation, projectileSpawnPos);
 		}
 
-		projectile.posX += projectileSpawnPos.X;
-		projectile.posY += projectileSpawnPos.Y;
-		projectile.posZ += projectileSpawnPos.Z;
+		projectile.setPosition(projectile.posX + projectileSpawnPos.X, projectile.posY, projectile.posZ);
+		projectile.setPosition(projectile.posX, projectile.posY + projectileSpawnPos.Y, projectile.posZ);
+		projectile.setPosition(projectile.posX, projectile.posY, projectile.posZ + projectileSpawnPos.Z);
 
 		worldObj.spawnEntityInWorld(projectile);
 
@@ -133,7 +133,6 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 	@Override
 	public void doItemDrops(){
 		ItemStack i = new ItemStack(ValkyrienWarfareCombatMod.instance.harpoonGunSpawner);
-		i.setStackDisplayName(getDisplayName() == null? "HARPOON_GUN" : getDisplayName().getFormattedText());//if getName() is null, set name to HARPOON_GUN. else set it to getName()
 		entityDropItem(i,0F);
 	}
 
