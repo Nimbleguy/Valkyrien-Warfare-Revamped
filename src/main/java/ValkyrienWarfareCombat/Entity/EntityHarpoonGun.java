@@ -68,16 +68,14 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 		}
 
 		if (getRider() != null){
-			double yaw = (((180-((rotationYaw<0? Math.abs(rotationYaw) : rotationYaw)%360)))*Math.PI)/180;
+			double yaw = ((rotationYaw-90)*Math.PI)/180;
 			
-			final double offsetBack = 0.5;//how far back the player is sitting
+			final double offsetBack = 1.5;//how far back the player is sitting
 			
-			double h = offsetBack*Math.sin(yaw);
-			double w = Math.sqrt(offsetBack*offsetBack-h*h);
+			double h = offsetBack*(Math.sin(yaw));
+			double w = offsetBack*(Math.cos(yaw));
 			
-			getRider().setPosition(posX+w,posY+0.5,posZ+h);
-			
-			//getRider().setRotationYawHead(rotationYaw);
+			getRider().setPosition(posX+w,posY+0.25,posZ+h);
 		}
 	}
 
