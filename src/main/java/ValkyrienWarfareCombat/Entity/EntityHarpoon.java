@@ -29,7 +29,6 @@ public class EntityHarpoon extends EntityArrow{
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
 		this.shootingEntity = origin;
-		ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(origin.getEntityId(), this.getEntityId()));
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		this.setRotation(origin.rotationYaw, origin.rotationPitch);
 		prevRotationYaw = origin.rotationYaw;
@@ -42,9 +41,17 @@ public class EntityHarpoon extends EntityArrow{
 
 		Entity entity = raytrace.entityHit;
 
+		if(!this.worldObj.isRemote && this.shootingEntity == null){
+			this.kill();
+		}
+
 		if(entity == null){
+			if(this.motionX != 0 && this.motionY != 0 && this.motionZ != 0 && !this.worldObj.isRemote){
+				ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(this.shootingEntity.getEntityId(), this.getEntityId()));
+			}
 			this.setVelocity(0, 0, 0);
-		}else if(!(entity instanceof EntityHarpoonGun || entity.equals(this))){//it hit an entity that isn't a harpoon gun
+		}
+		else if(!(entity instanceof EntityHarpoonGun || entity.equals(this))){//it hit an entity that isn't a harpoon gun
 			DamageSource damagesource;
 
 			if (shootingEntity == null){

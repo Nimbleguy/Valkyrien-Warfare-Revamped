@@ -35,8 +35,23 @@ public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, I
 
 	@Override
 	public IMessage onMessage(PacketHarpoon p, MessageContext c){
-		EntityHarpoon h = (EntityHarpoon)Minecraft.getMinecraft().theWorld.getEntityByID(hid);
-		h.shootingEntity = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+		Minecraft.getMinecraft().addScheduledTask(new Execute(gid, hid));
 		return null;
+	}
+
+	private class Execute extends Thread{
+		int gid;
+		int hid;
+
+		public Execute(int g, int h){
+			gid = g;
+			hid = h;
+		}
+
+		@Override
+		public void run(){
+			EntityHarpoon h = (EntityHarpoon)Minecraft.getMinecraft().theWorld.getEntityByID(hid);
+			h.shootingEntity = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+		}
 	}
 }
