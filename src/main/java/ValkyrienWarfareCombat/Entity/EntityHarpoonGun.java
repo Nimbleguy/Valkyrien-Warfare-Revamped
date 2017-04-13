@@ -11,8 +11,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -67,6 +65,19 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 				this.kill();
 				this.doItemDrops();
 			}
+		}
+
+		if (getRider() != null){
+			double yaw = (((180-((rotationYaw<0? Math.abs(rotationYaw) : rotationYaw)%360)))*Math.PI)/180;
+			
+			final double offsetBack = 0.5;//how far back the player is sitting
+			
+			double h = offsetBack*Math.sin(yaw);
+			double w = Math.sqrt(offsetBack*offsetBack-h*h);
+			
+			getRider().setPosition(posX+w,posY+0.5,posZ+h);
+			
+			//getRider().setRotationYawHead(rotationYaw);
 		}
 	}
 
