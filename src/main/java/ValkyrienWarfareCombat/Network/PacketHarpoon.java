@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 
 import ValkyrienWarfareCombat.Entity.EntityHarpoon;
+import ValkyrienWarfareCombat.Entity.EntityHarpoonGun;
 
 public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, IMessage>{
 	private int gid;
@@ -51,7 +52,8 @@ public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, I
 		@Override
 		public void run(){
 			EntityHarpoon h = (EntityHarpoon)Minecraft.getMinecraft().theWorld.getEntityByID(hid);
-			h.origin = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+			h.origin = (EntityHarpoonGun)Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+			h.origin.harpoon = h;
 		}
 	}
 }

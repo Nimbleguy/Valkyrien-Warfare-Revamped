@@ -22,7 +22,7 @@ public class EntityHarpoon extends EntityArrow{
 	public static final int MAX_DMG = 20;//10 hearts
 	public static final int MIN_DMG = 5;//2.5 hearts
 
-	public Entity origin;
+	public EntityHarpoonGun origin;
 
 	public EntityHarpoon(World worldIn) {
 		super(worldIn);
@@ -30,6 +30,7 @@ public class EntityHarpoon extends EntityArrow{
 
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
+		origin.harpoon = this;
 		this.origin = origin;
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		this.setRotation(origin.rotationYaw, origin.rotationPitch);

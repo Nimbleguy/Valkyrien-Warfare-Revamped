@@ -23,11 +23,19 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 
 	private long lastFireTick = -TIME_COOLDOWN_TICKS;
 
+	public EntityHarpoon harpoon;
+
 	public EntityHarpoonGun(World worldIn){
 		super(worldIn);
+		this.height = 3;
+		this.width = 2;
 	}
 
 	public void fire(EntityPlayer actor, ItemStack stack, EnumHand hand){
+		if(harpoon != null){
+			harpoon.setDead();
+			harpoon = null;
+		}
 
 		Vec3d velocityNormal = getVectorForRotation(rotationPitch, rotationYaw);
 		Vector velocityVector = new Vector(velocityNormal);
@@ -37,7 +45,7 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 			RotationMatrices.applyTransform(wrapper.wrapping.coordTransform.lToWRotation, velocityVector);
 		}
 
-		velocityVector.multiply(2D);
+		velocityVector.multiply(5D);
 		EntityHarpoon projectile = new EntityHarpoon(worldObj, velocityVector, this);
 
 		projectile.shootingEntity = actor;
@@ -54,7 +62,7 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 
 		worldObj.spawnEntityInWorld(projectile);
 
-		lastFireTick = worldObj.getMinecraftServer().getTickCounter();
+		lastFireTick = worldObj.getTotalWorldTime();
 	}
 
 	@Override
@@ -75,14 +83,17 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 			double h = offsetBack*(Math.sin(yaw));
 			double w = offsetBack*(Math.cos(yaw));
 			
-			getRider().setPosition(posX+w,posY+0.25,posZ+h);
+			getRider().setPosition(posX+w,posY,posZ+h);
+		}
+		else if(!worldObj.isRemote){
+			lastFireTick = worldObj.getTotalWorldTime();
 		}
 	}
 
 	@Override
 	public void onRiderInteract(EntityPlayer player, ItemStack stack, EnumHand hand){
 		if (!player.worldObj.isRemote){
-			if (worldObj.getMinecraftServer().getTickCounter()-lastFireTick >= TIME_COOLDOWN_TICKS){
+			if (worldObj.getTotalWorldTime()-lastFireTick >= TIME_COOLDOWN_TICKS){
 
 				ItemStack harpoon = null;
 				List<ItemStack> gunpowders = new ArrayList<ItemStack>();

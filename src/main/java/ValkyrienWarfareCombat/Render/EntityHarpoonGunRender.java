@@ -91,6 +91,13 @@ public class EntityHarpoonGunRender extends Render<EntityHarpoonGun> {
 		GlStateManager.enableLighting();
 
 		GL11.glPopMatrix();
+
+		if(entity.harpoon != null){
+			double offx = entity.harpoon.posX - entity.posX;
+			double offy = entity.harpoon.posY - entity.posY;
+			double offz = entity.harpoon.posZ - entity.posZ;
+			HarpoonHelper.renderRope(x, y + 1.25, z, offx, offy - 1.25, offz);
+		}
 	}
 
 	private void renderBase(EntityHarpoonGun entity, double x, double y, double z, float entityYaw, float partialTicks) {
