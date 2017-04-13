@@ -51,7 +51,7 @@ public class PacketHarpoon implements IMessage, IMessageHandler<PacketHarpoon, I
 		@Override
 		public void run(){
 			EntityHarpoon h = (EntityHarpoon)Minecraft.getMinecraft().theWorld.getEntityByID(hid);
-			h.shootingEntity = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
+			h.origin = Minecraft.getMinecraft().theWorld.getEntityByID(gid);
 		}
 	}
 }

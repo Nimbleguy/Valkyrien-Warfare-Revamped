@@ -22,13 +22,15 @@ public class EntityHarpoon extends EntityArrow{
 	public static final int MAX_DMG = 20;//10 hearts
 	public static final int MIN_DMG = 5;//2.5 hearts
 
+	public Entity origin;
+
 	public EntityHarpoon(World worldIn) {
 		super(worldIn);
 	}
 
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
-		this.shootingEntity = origin;
+		this.origin = origin;
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		this.setRotation(origin.rotationYaw, origin.rotationPitch);
 		prevRotationYaw = origin.rotationYaw;
@@ -41,13 +43,13 @@ public class EntityHarpoon extends EntityArrow{
 
 		Entity entity = raytrace.entityHit;
 
-		if(!this.worldObj.isRemote && this.shootingEntity == null){
+		if(!this.worldObj.isRemote && (this.origin == null || this.origin.isDead)){
 			this.kill();
 		}
 
 		if(entity == null){
 			if(this.motionX != 0 && this.motionY != 0 && this.motionZ != 0 && !this.worldObj.isRemote){
-				ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(this.shootingEntity.getEntityId(), this.getEntityId()));
+				ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(this.origin.getEntityId(), this.getEntityId()));
 			}
 			this.setVelocity(0, 0, 0);
 		}
