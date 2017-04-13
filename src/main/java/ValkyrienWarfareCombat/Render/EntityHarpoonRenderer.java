@@ -24,7 +24,8 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 	public void doRender(EntityHarpoon entity, double x, double y, double z, float entityYaw, float partialTicks){
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 
-		if(entity.origin != null){
+		if(entity.shootingEntity != null){
+			System.out.println("kek");
 			GlStateManager.pushMatrix();
 
 			GlStateManager.disableTexture2D();
@@ -36,7 +37,7 @@ public class EntityHarpoonRenderer extends RenderArrow<EntityHarpoon> {
 			v.pos(x, y, z);
 			v.color(141, 81, 24, 255);
 			v.endVertex();
-			v.pos(entity.origin.posX, entity.origin.posY, entity.origin.posZ);
+			v.pos(entity.shootingEntity.posX, entity.shootingEntity.posY, entity.shootingEntity.posZ);
 			v.color(141, 81, 24, 255);
 			v.endVertex();
 			t.draw();

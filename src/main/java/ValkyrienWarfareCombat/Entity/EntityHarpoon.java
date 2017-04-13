@@ -20,15 +20,14 @@ public class EntityHarpoon extends EntityArrow{
 	public static final int MAX_DMG = 20;//10 hearts
 	public static final int MIN_DMG = 5;//2.5 hearts
 
-	public EntityHarpoonGun origin;
-
 	public EntityHarpoon(World worldIn) {
 		super(worldIn);
 	}
 
 	public EntityHarpoon(World worldObj, Vector velocityVector, EntityHarpoonGun origin){
 		super(worldObj);
-		this.origin=origin;
+		System.out.println(worldObj.isRemote);
+		this.shootingEntity = origin;
 		this.setVelocity(velocityVector.X, velocityVector.Y, velocityVector.Z);
 		this.setRotation(origin.rotationYaw, origin.rotationPitch);
 		prevRotationYaw = origin.rotationYaw;
@@ -40,7 +39,7 @@ public class EntityHarpoon extends EntityArrow{
 	public void onHit(RayTraceResult raytrace){
 
 		Entity entity = raytrace.entityHit;
-		
+
 		if(entity == null){
 			this.setVelocity(0, 0, 0);
 		}else if(!(entity instanceof EntityHarpoonGun || entity.equals(this))){//it hit an entity that isn't a harpoon gun

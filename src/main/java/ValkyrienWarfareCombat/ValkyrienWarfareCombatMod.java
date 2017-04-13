@@ -9,6 +9,7 @@ import ValkyrienWarfareCombat.Item.ItemCannonBall;
 import ValkyrienWarfareCombat.Item.ItemHarpoonGun;
 import ValkyrienWarfareCombat.Item.ItemPowderPouch;
 import ValkyrienWarfareCombat.Item.ItemHarpoon;
+import ValkyrienWarfareCombat.Network.PacketHarpoon;
 import ValkyrienWarfareCombat.Proxy.CommonProxyCombat;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -23,8 +24,11 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = ValkyrienWarfareCombatMod.MODID, name = ValkyrienWarfareCombatMod.MODNAME, version = ValkyrienWarfareCombatMod.MODVER)
 public class ValkyrienWarfareCombatMod {
@@ -47,6 +51,8 @@ public class ValkyrienWarfareCombatMod {
 	public Block fakeCannonBlock;
 	public Block fakeHarpoonGunBlock;
 
+	public SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID.toLowerCase());
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		instance = this;
@@ -54,6 +60,7 @@ public class ValkyrienWarfareCombatMod {
 		registerItems(event);
 		registerRecipies(event);
 		registerEntities(event);
+		registerPackets(event);
 		proxy.preInit(event);
 	}
 
@@ -102,4 +109,8 @@ public class ValkyrienWarfareCombatMod {
 		GameRegistry.addRecipe(new ItemStack(harpoon, 1), new Object[] {" II", "SWI", "WS ", 'I', Items.IRON_INGOT, 'S', Items.STRING, 'W', Items.STICK});
 	}
 
+	private void registerPackets(FMLStateEvent event){
+		int id = 0;
+		network..registerMessage(PacketHarpoon.class, PacketHarpoon.class, id++, Side.CLIENT);
+	}
 }
