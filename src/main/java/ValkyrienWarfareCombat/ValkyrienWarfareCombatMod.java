@@ -1,5 +1,7 @@
 package ValkyrienWarfareCombat;
 
+import ValkyrienWarfareCombat.Block.FakeCannonBlock;
+import ValkyrienWarfareCombat.Block.FakeHarpoonGunBlock;
 import ValkyrienWarfareCombat.Entity.EntityCannonBall;
 import ValkyrienWarfareCombat.Entity.EntityCannonBasic;
 import ValkyrienWarfareCombat.Entity.EntityHarpoon;
