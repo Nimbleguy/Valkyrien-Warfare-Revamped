@@ -13,7 +13,9 @@ public class HarpoonHelper{
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();
 
-		GlStateManager.glLineWidth(5f);
+		double wid = 5;//TODO Math
+		
+		GlStateManager.glLineWidth((float)wid);
 
 		GL11.glTranslated(x, y, z);
 
