@@ -81,7 +81,7 @@ public class ValkyrienWarfareCombatMod {
 		basicCannonSpawner = new ItemBasicCannon().setUnlocalizedName("basiccannonspawner").setRegistryName(MODID, "basiccannonspawner").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(4);
 		cannonBall = new ItemCannonBall().setUnlocalizedName("cannonball").setRegistryName(MODID, "cannonball").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
 		powderPouch = new ItemPowderPouch().setUnlocalizedName("powderpouch").setRegistryName(MODID, "powderpouch").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
-		harpoon = new ItemHarpoon().setUnlocalizedName("harpoon").setRegistryName(MODID, "harpoon").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(32);
+		harpoon = new ItemHarpoon().setUnlocalizedName("harpoon").setRegistryName(MODID, "harpoon").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(8);
 		harpoonGunSpawner = new ItemHarpoonGun().setUnlocalizedName("harpoongunspawner").setRegistryName(MODID, "harpoongunspawner").setCreativeTab(CreativeTabs.COMBAT).setMaxStackSize(1);
 
 		GameRegistry.register(basicCannonSpawner);
