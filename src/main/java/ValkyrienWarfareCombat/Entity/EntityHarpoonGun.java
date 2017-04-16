@@ -7,6 +7,7 @@ import ValkyrienWarfareBase.API.RotationMatrices;
 import ValkyrienWarfareBase.API.Vector;
 import ValkyrienWarfareBase.PhysicsManagement.PhysicsWrapperEntity;
 import ValkyrienWarfareCombat.ValkyrienWarfareCombatMod;
+import ValkyrienWarfareCombat.Network.PacketHarpoonReset;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,7 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 
 	public void fire(EntityPlayer actor, ItemStack stack, EnumHand hand){
 		if(harpoon != null){
+			ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoonReset(this.getEntityId()));
 			harpoon.setDead();
 			harpoon = null;
 		}

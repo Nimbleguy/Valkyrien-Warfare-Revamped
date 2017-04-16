@@ -12,6 +12,7 @@ import ValkyrienWarfareCombat.Item.ItemHarpoonGun;
 import ValkyrienWarfareCombat.Item.ItemPowderPouch;
 import ValkyrienWarfareCombat.Item.ItemHarpoon;
 import ValkyrienWarfareCombat.Network.PacketHarpoon;
+import ValkyrienWarfareCombat.Network.PacketHarpoonReset;
 import ValkyrienWarfareCombat.Proxy.CommonProxyCombat;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -114,5 +115,6 @@ public class ValkyrienWarfareCombatMod {
 	private void registerPackets(FMLStateEvent event){
 		int id = 0;
 		network.registerMessage(PacketHarpoon.class, PacketHarpoon.class, id++, Side.CLIENT);
+		network.registerMessage(PacketHarpoonReset.class, PacketHarpoonReset.class, id++, Side.CLIENT);
 	}
 }
