@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.base.Predicate;
+
 import ValkyrienWarfareBase.BlockPhysicsRegistration;
 import ValkyrienWarfareBase.NBTUtils;
 import ValkyrienWarfareBase.ValkyrienWarfareMod;
@@ -57,6 +59,8 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PhysicsObject {
 
@@ -81,8 +85,6 @@ public class PhysicsObject {
 	public boolean doPhysics = true;
 	public boolean fromSplit = false;
 
-	// The closest Chunks to the Ship cached in here
-	public ChunkCache surroundingWorldChunksCache;
 	public String creator;
 
 	public PhysCollisionCallable collisionCallable = new PhysCollisionCallable(this);
@@ -90,6 +92,8 @@ public class PhysicsObject {
 	public int lastMessageTick;
 	public int detectorID;
 
+	// The closest Chunks to the Ship cached in here
+	public ChunkCache surroundingWorldChunksCache;
 	public boolean blocksChanged = false;
 
 	// TODO: Make for re-organizing these to make Ship sizes Dynamic
@@ -219,11 +223,14 @@ public class PhysicsObject {
 			// onPlayerUntracking(wachingPlayer);
 		}
 		watchingPlayers.clear();
+		ValkyrienWarfareMod.chunkManager.removeRegistedChunksForShip(wrapper);
+		ValkyrienWarfareMod.chunkManager.removeShipPosition(wrapper);
 		ValkyrienWarfareMod.physicsManager.onShipUnload(wrapper);
 	}
 
 	public void claimNewChunks(int radius) {
 		ownedChunks = ValkyrienWarfareMod.chunkManager.getManagerForWorld(wrapper.worldObj).getNextAvaliableChunkSet(radius);
+		ValkyrienWarfareMod.chunkManager.registerChunksForShip(wrapper);
 	}
 
 	/*
@@ -405,11 +412,23 @@ public class PhysicsObject {
 
 		PlayerChunkMap map = ((WorldServer) worldObj).getPlayerChunkMap();
 
-		PlayerChunkMapEntry entry = map.getOrCreateEntry(x, z);
+		PlayerChunkMapEntry entry = new PlayerChunkMapEntry(map, x, z){
+			@Override
+			public boolean hasPlayerMatchingInRange(double range, Predicate<EntityPlayerMP> predicate)
+		    {
+				return true;
+		    }
+		};
+
+
+		long i = map.getIndex(x, z);
+
+		map.playerInstances.put(i, entry);
+		map.playerInstanceList.add(entry);
+
+
 		entry.sentToPlayers = true;
 		entry.players = watchingPlayers;
-
-		map.pendingSendToPlayers.remove(entry);
 
 		claimedChunksEntries[x - ownedChunks.minX][z - ownedChunks.minZ] = entry;
 //		MinecraftForge.EVENT_BUS.post(new ChunkEvent.Load(chunk));
@@ -527,6 +546,11 @@ public class PhysicsObject {
 		tickQueuedForces();
 
 		explodedPositionsThisTick.clear();
+
+
+		if(!wrapper.isDead && !wrapper.worldObj.isRemote){
+			ValkyrienWarfareMod.chunkManager.updateShipPosition(wrapper);
+		}
 	}
 
 	// Returns true if splitting happened

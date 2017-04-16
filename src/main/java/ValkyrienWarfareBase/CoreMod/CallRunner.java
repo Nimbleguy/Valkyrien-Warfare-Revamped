@@ -1,7 +1,9 @@
 package ValkyrienWarfareBase.CoreMod;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -15,6 +17,7 @@ import ValkyrienWarfareBase.ChunkManagement.PhysicsChunkManager;
 import ValkyrienWarfareBase.Collision.EntityCollisionInjector;
 import ValkyrienWarfareBase.Collision.EntityPolygon;
 import ValkyrienWarfareBase.Collision.Polygon;
+import ValkyrienWarfareBase.Interaction.ShipUUIDToPosData.ShipPositionData;
 import ValkyrienWarfareBase.Physics.BlockMass;
 import ValkyrienWarfareBase.Physics.PhysicsQueuedForce;
 import ValkyrienWarfareBase.PhysicsManagement.PhysicsWrapperEntity;
@@ -24,6 +27,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.SleepResult;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -33,6 +37,7 @@ import net.minecraft.network.play.server.SPacketEffect;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -51,6 +56,122 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public class CallRunner {
 
+	public static Iterator<Chunk> rebuildChunkIterator(Iterator<Chunk> chunkIterator){
+		ArrayList<Chunk> newBackingArray = new ArrayList<Chunk>();
+		while(chunkIterator.hasNext()){
+			newBackingArray.add(chunkIterator.next());
+		}
+		return newBackingArray.iterator();
+	}
+
+    public static BlockPos getBedSpawnLocation(World worldIn, BlockPos bedLocation, boolean forceSpawn){
+    	BlockPos toReturn = EntityPlayer.getBedSpawnLocation(worldIn, bedLocation, forceSpawn);
+
+//    	System.out.println("Keep their heads ringing");
+
+		int chunkX = bedLocation.getX() >> 4;
+		int chunkZ = bedLocation.getZ() >> 4;
+		long chunkPos = ChunkPos.chunkXZ2Int(chunkX, chunkZ);
+
+		UUID shipManagingID = ValkyrienWarfareMod.chunkManager.getShipIDManagingPos_Persistant(worldIn, chunkX, chunkZ);
+		if(shipManagingID != null){
+			ShipPositionData positionData = ValkyrienWarfareMod.chunkManager.getShipPosition_Persistant(worldIn, shipManagingID);
+
+			if(positionData != null){
+				double[] lToWTransform = RotationMatrices.convertToDouble(positionData.lToWTransform);
+
+				Vector bedPositionInWorld = new Vector(bedLocation.getX() + .5D, bedLocation.getY() + .5D, bedLocation.getZ() + .5D);
+				RotationMatrices.applyTransform(lToWTransform, bedPositionInWorld);
+
+				bedPositionInWorld.Y += 1D;
+
+				bedLocation = new BlockPos(bedPositionInWorld.X, bedPositionInWorld.Y, bedPositionInWorld.Z);
+
+				return bedLocation;
+			}else{
+				System.err.println("A ship just had Chunks claimed persistant, but not any position data persistant");
+			}
+		}
+
+    	return toReturn;
+    }
+
+    public static SleepResult replaceSleep(EntityPlayer player, BlockPos bedLocation){
+    	PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getObjectManagingPos(player.worldObj, bedLocation);
+
+    	if(wrapper != null){
+    		SleepResult toReturn = null;
+    		if(!player.worldObj.isRemote){
+    			toReturn = player.trySleep(bedLocation);
+    			if(toReturn != SleepResult.OK){
+    				return toReturn;
+    			}
+    		}
+            wrapper.wrapping.fixEntity(player, new Vector(bedLocation.getX() + 0.5D, bedLocation.getY() + 0.6875D, bedLocation.getZ() + 0.5D));
+
+	        if(player.worldObj.isRemote){
+	        	player.startRiding(wrapper, true);
+	        }else{
+	        	wrapper.wrapping.queueEntityForMounting(player);
+	        }
+
+	        if(player.worldObj.isRemote){
+	        	player.sleeping = true;
+
+	        	return SleepResult.NOT_POSSIBLE_NOW;
+	        }
+
+	        if(toReturn != null){
+	        	return toReturn;
+	        }else{
+	        	System.out.println("Wtf happened here");
+	        }
+    	}
+
+    	return player.trySleep(bedLocation);
+    }
+
+	public static void fixSponge(EntityPlayer player){
+		PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getShipFixedOnto(player);
+
+		if(wrapper != null && player.worldObj.isRemote){
+			player.sleeping = false;
+			player.sleepTimer = 0;
+
+			Vector newPlayerPos = new Vector(player.posX, player.posY, player.posZ);
+			RotationMatrices.applyTransform(wrapper.wrapping.coordTransform.lToWTransform, newPlayerPos);
+			player.posX = player.lastTickPosX = newPlayerPos.X;
+			player.posY = player.lastTickPosY = newPlayerPos.Y;
+			player.posZ = player.lastTickPosZ = newPlayerPos.Z;
+
+			player.sleeping = false;
+
+			player.dismountRidingEntity();
+		}
+	}
+
+	public static void afterWakeUpPlayer(EntityPlayer player){
+		BlockPos playerBlockPos = new BlockPos(player);
+		PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getObjectManagingPos(player.worldObj, playerBlockPos);
+
+		if(wrapper != null){
+			//Player got dumped in ship space >:(
+			Vector newPlayerPos = new Vector(player.posX, player.posY, player.posZ);
+			RotationMatrices.applyTransform(wrapper.wrapping.coordTransform.lToWTransform, newPlayerPos);
+
+
+			player.sleeping = false;
+
+//			player.dismountRidingEntity();
+			player.ridingEntity = null;
+
+			player.posX = player.lastTickPosX = newPlayerPos.X;
+			player.posY = player.lastTickPosY = newPlayerPos.Y + 1D;
+			player.posZ = player.lastTickPosZ = newPlayerPos.Z;
+		}
+		player.sleeping = false;
+	}
+
 	/**
 	 * Runs after a player tries to sleep
 	 * @param player
@@ -59,35 +180,37 @@ public class CallRunner {
 	 * @return
 	 */
     public static SleepResult trySleepAfterSleep(EntityPlayer player, BlockPos bedLocation, SleepResult result){
-    	BlockPos playerPos = new BlockPos(player);
-    	World world = player.worldObj;
-    	PhysicsWrapperEntity wrapper = ValkyrienWarfareMod.physicsManager.getObjectManagingPos(world, playerPos);
+
+    	if(player.worldObj.isRemote){
+	    	IBlockState state = null;
+	        if (player.worldObj.isBlockLoaded(bedLocation)) state = player.worldObj.getBlockState(bedLocation);
+	        if (state != null && state.getBlock().isBed(state, player.worldObj, bedLocation, player)) {
+	            EnumFacing enumfacing = state.getBlock().getBedDirection(state, player.worldObj, bedLocation);
+	            float f = 0.5F;
+	            float f1 = 0.5F;
+
+	            switch (enumfacing)
+	            {
+	                case SOUTH:
+	                    f1 = 0.9F;
+	                    break;
+	                case NORTH:
+	                    f1 = 0.1F;
+	                    break;
+	                case WEST:
+	                    f = 0.1F;
+	                    break;
+	                case EAST:
+	                    f = 0.9F;
+	            }
+
+//	            System.out.println(enumfacing);
+
+	            player.setRenderOffsetForSleep(enumfacing);
+	        }
+    	}
 
     	return result;
-    }
-
-	/**
-	 * I've got 30 different reasons to hate ChickenChunks; but fuck him this is #1
-	 * @param world
-	 * @return
-	 */
-	public static ImmutableSetMultimap<ChunkPos, Ticket> fuckChickenChunks(World world){
-		ImmutableSetMultimap original = world.getPersistentChunks();
-
-		ImmutableSetMultimap.Builder builder = ImmutableSetMultimap.builder();
-		builder.putAll(original);
-
-		ArrayList<PhysicsWrapperEntity> wrapperEntities = ValkyrienWarfareMod.physicsManager.getManagerForWorld(world).getTickablePhysicsEntities();
-		for(PhysicsWrapperEntity wrapper:wrapperEntities){
-			for(Chunk[] chunks:wrapper.wrapping.claimedChunks){
-				for(Chunk chunk:chunks){
-					//Don't bother generating a new ticket, this specific use case works with it
-					builder.put(new ChunkPos(chunk.xPosition, chunk.zPosition), chunk);
-				}
-			}
-		}
-
-		return builder.build();
     }
 
 	public static double getDistanceSq(TileEntity tile, double x, double y, double z){
@@ -335,6 +458,22 @@ public class CallRunner {
 	}
 
 	public static List<Entity> onGetEntitiesInAABBexcluding(World world, @Nullable Entity entityIn, AxisAlignedBB boundingBox, @Nullable Predicate<? super Entity> predicate) {
+		if((boundingBox.maxX-boundingBox.minX)*(boundingBox.maxZ-boundingBox.minZ) > 1000000D){
+			return new ArrayList();
+		}
+
+		//Prevents the players item pickup AABB from merging with a PhysicsWrapperEntity AABB
+		if(entityIn instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)entityIn;
+			if (player.isRiding() && !player.getRidingEntity().isDead && player.getRidingEntity() instanceof PhysicsWrapperEntity){
+                AxisAlignedBB axisalignedbb = player.getEntityBoundingBox().union(player.getRidingEntity().getEntityBoundingBox()).expand(1.0D, 0.0D, 1.0D);
+
+                if(boundingBox.equals(axisalignedbb)){
+                	boundingBox = player.getEntityBoundingBox().expand(1.0D, 0.5D, 1.0D);
+                }
+            }
+		}
+
 		List toReturn = world.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
 
 		BlockPos pos = new BlockPos((boundingBox.minX + boundingBox.maxX) / 2D, (boundingBox.minY + boundingBox.maxY) / 2D, (boundingBox.minZ + boundingBox.maxZ) / 2D);
