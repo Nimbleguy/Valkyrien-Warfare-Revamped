@@ -37,10 +37,15 @@ public class EntityHarpoon extends EntityArrow{
 		prevRotationPitch = origin.rotationPitch;
 		this.setPosition(origin.posX, origin.posY, origin.posZ);
 	}
-	
+
 	@Override
 	public void onUpdate(){
 		super.onUpdate();
+		if (!worldObj.isRemote){
+			if (origin.isDead){
+				setDead();
+			}
+		}
 	}
 
 	@Override
