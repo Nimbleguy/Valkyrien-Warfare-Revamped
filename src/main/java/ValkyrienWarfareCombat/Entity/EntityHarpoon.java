@@ -16,13 +16,6 @@ import net.minecraft.world.World;
 
 public class EntityHarpoon extends EntityArrow{
 
-	private boolean stop = false;
-	private double stopx = 0;
-	private double stopy = 0;
-	private double stopz = 0;
-	private float stopyaw = 0;
-	private float stoppitch = 0;
-
 	//TODO make below two vars configurable
 	public static final int MAX_DMG = 20;//10 hearts
 	public static final int MIN_DMG = 5;//2.5 hearts
@@ -47,18 +40,16 @@ public class EntityHarpoon extends EntityArrow{
 	@Override
 	public void onUpdate(){
 		super.onUpdate();
-		System.out.printf("%d: %f, %f, %f\n", this.getEntityId(), this.stopx, this.stopy, this.stopz);
-		if(stop){
-			this.setVelocity(0, 0, 0);
-			this.setPosition(stopx, stopy, stopz);
-			this.setRotation(stopyaw, stoppitch);
-		}
 	}
 
 	@Override
 	public void onHit(RayTraceResult raytrace){
-
 		Entity entity = raytrace.entityHit;
+
+		if(entity == null){ // minecraft dust: don't breathe this
+			super.onHit(raytrace);
+		}
+
 
 		if(!this.worldObj.isRemote && (this.origin == null || this.origin.isDead)){
 			this.kill();
@@ -68,35 +59,6 @@ public class EntityHarpoon extends EntityArrow{
 			if(this.motionX != 0 && this.motionY != 0 && this.motionZ != 0 && !this.worldObj.isRemote){
 				ValkyrienWarfareCombatMod.instance.network.sendToAll(new PacketHarpoon(this.origin.getEntityId(), this.getEntityId()));
 			}
-
-			stopx = posX;
-			stopy = posY;
-			stopz = posZ;
-			stopyaw = this.rotationYaw;
-			stoppitch = this.rotationPitch;
-			switch (raytrace.sideHit){//stick it into the block
-			case DOWN:
-				stopy += 0.25;
-				break;
-			case EAST:
-				stopx -= 0.25;
-				break;
-			case NORTH:
-				stopz += 0.25;
-				break;
-			case SOUTH:
-				stopz -= 0.25;
-				break;
-			case UP:
-				stopy -= 0.25;
-				break;
-			case WEST:
-				stopx += 0.25;
-				break;
-			}
-
-			stop = false;
-			this.setVelocity(0, 0, 0);
 		}
 		else if(!(entity.equals(origin) || entity.equals(this))){//it hit an entity that isn't a harpoon gun
 			DamageSource damagesource;

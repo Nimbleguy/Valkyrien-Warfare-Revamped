@@ -52,7 +52,8 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 
 		projectile.shootingEntity = actor;
 
-		Vector projectileSpawnPos = new Vector(0,.5,0);
+		double yaw = ((rotationYaw+90)*Math.PI)/180;
+		Vector projectileSpawnPos = new Vector(2 * Math.sin(yaw), .5, 2 * Math.cos(yaw));
 
 		if(wrapper != null){
 			RotationMatrices.applyTransform(wrapper.wrapping.coordTransform.lToWRotation, projectileSpawnPos);
