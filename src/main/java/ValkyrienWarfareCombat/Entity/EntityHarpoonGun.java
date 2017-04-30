@@ -80,12 +80,12 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 		if (getRider() != null){
 			double yaw = ((rotationYaw-90)*Math.PI)/180;
 			
-			final double offsetBack = 1.5;//how far back the player is sitting
+			final double offsetBack = 1;//how far back the player is sitting
 			
 			double h = offsetBack*(Math.sin(yaw));
 			double w = offsetBack*(Math.cos(yaw));
 			
-			getRider().setPosition(posX+w,posY,posZ+h);
+			getRider().setPosition(posX+w,posY+0.5,posZ+h);
 		}
 		else if(!worldObj.isRemote){
 			lastFireTick = worldObj.getTotalWorldTime();
