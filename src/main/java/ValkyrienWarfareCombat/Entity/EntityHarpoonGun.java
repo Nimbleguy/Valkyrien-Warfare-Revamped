@@ -71,12 +71,12 @@ public class EntityHarpoonGun extends EntityMountingWeaponBase{
 	@Override
 	public void onUpdate(){
 		super.onUpdate();
-		if (!worldObj.isRemote){
+		/*if (!worldObj.isRemote){
 			if (worldObj.getBlockState(new BlockPos(posX,((int)posY)-1,posZ)).getMaterial().equals(Material.AIR)){
 				this.kill();
 				this.doItemDrops();
 			}
-		}
+		}*/
 
 		if (getRider() != null){
 			double yaw = ((rotationYaw-90)*Math.PI)/180;
